@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: eltonhst
+
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+    platform: h2
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+    path: /h2-console
+
+  profiles:
+    active: production
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/new-app
+          audiences: account
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+
+keycloak:
+  realm: new-app
+  domain: localhost:8080
+  adminClientId: springboot-client
+  adminClientSecret: 4C5Je6BGG1bZE1RjmGiFcyxjgRB9MP4D
+  urls:
+    auth: http://${keycloak.domain}
+
+server:
+  port: 8081
