@@ -1,25 +1,31 @@
 package io.github.eltonhst.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
+
+import java.util.List;
+import java.util.UUID;
 
 @Getter
+@Setter
 @Builder
-@Entity
 public class UserEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private UUID userId;
 
-    private String name;
+    private String firstName;
+
+    private String lastName;
+
+    private String username;
+
+    private String password;
 
     private String email;
 
-    private String password;
+    private boolean isOwner;
+
+    private List<String> roles;
 
 }

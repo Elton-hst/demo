@@ -38,3 +38,17 @@ keycloak:
 
 server:
   port: 8081
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      clienteService:
+        slidingWindowSize: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 5s
+
+  retry:
+    instances:
+      clienteService:
+        maxAttempts: 3
+        waitDuration: 500ms
