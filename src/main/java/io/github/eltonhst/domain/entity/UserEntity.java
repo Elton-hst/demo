@@ -24,7 +24,11 @@ public class UserEntity {
 
     private String email;
 
-    private boolean isOwner;
+    private Boolean enabled;
+
+    private Boolean emailVerified;
+
+    private Long createdTimestamp;
 
     private List<String> roles;
 

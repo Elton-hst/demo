@@ -19,7 +19,7 @@ public class OwnerSearchUseCase {
     }
 
     public Either<RuntimeException, OwnerEntity> execute(UUID userId) {
-        log.info("[Service: OwnerSearchUseCase] Iniciando a busca do client {}", userId);
-        return repository.findOwnerById(userId);
+        log.info("[Service] Iniciando a busca do client {}", userId);
+        return repository.findByUserId(userId);
     }
 }

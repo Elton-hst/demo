@@ -11,6 +11,6 @@ public interface OwnerRepository {
 
     Either<RuntimeException, UUID> createOwner(OwnerEntity ownerEntity);
 
-    Either<RuntimeException, OwnerEntity> findOwnerById(UUID userId);
+    Either<RuntimeException, OwnerEntity> findByUserId(UUID userId);
 
 }

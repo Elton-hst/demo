@@ -1,6 +1,7 @@
 package io.github.eltonhst.domain.useCase.auth;
 
 import io.github.eltonhst.api.dto.AuthDTO;
+import io.github.eltonhst.api.dto.CredentialsDTO;
 import io.github.eltonhst.api.dto.UserDTO;
 import io.github.eltonhst.domain.exception.NotAuthorizedException;
 import io.github.eltonhst.domain.exception.UnauthorizedException;
@@ -23,21 +24,22 @@ public class AuthLoginUseCase {
         this.searchUseCase = searchUseCase;
     }
 
-    public Either<RuntimeException, AuthDTO> execute(UserDTO user) {
-        try (var keycloakBuilder = KeycloakBuilder
+    public Either<RuntimeException, AuthDTO> execute(CredentialsDTO credentials) {
+        try (final var keycloakBuilder = KeycloakBuilder
                 .builder()
                 .realm(keyclockProperties.getRealm())
                 .serverUrl(keyclockProperties.getAuthServerUrl())
                 .clientId(keyclockProperties.getAdminClientId())
                 .clientSecret(keyclockProperties.getAdminClientSecret())
                 .grantType("password")
-                .username(user.username())
-                .password(user.password())
+                .username(credentials.getUsername())
+                .password(credentials.getPassword())
                 .build()) {
 
             final String token = keycloakBuilder.tokenManager().getAccessTokenString();
             final String refreshToken = keycloakBuilder.tokenManager().getAccessToken().getRefreshToken();
-            return searchUseCase.findByUsername(user.username()).fold(
+
+            return searchUseCase.findByUsername(credentials.getUsername()).fold(
                     Either::left,
                     userEntity -> Either.right(new AuthDTO(
                             token,

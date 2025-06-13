@@ -28,7 +28,7 @@ public class OwnerCreateUseCase {
     @Transactional
     public Either<RuntimeException, UUID> execute(UserEntity user) {
         try {
-            log.info("[Service: OwnerCreateUseCase] Iniciando a criação do usuário {}", user.getUsername());
+            log.info("[Service] Iniciando a criação do usuário {}", user.getUsername());
             addRoleToUser.execute(
                     user.getUserId(),
                     AuthEnum.OWNER.getRole()
@@ -36,13 +36,14 @@ public class OwnerCreateUseCase {
             final OwnerEntity owner = getOwnerEntity(user);
             return repository.createOwner(owner);
         } catch (RuntimeException e) {
-            log.error("[Service: OwnerCreateUseCase] Erro ao tentar criar um novo Owner");
+            log.error("[Service] Erro ao tentar criar um novo Owner");
             return Either.left(new BadRequestException(e.getMessage()));
         }
     }
 
     private static OwnerEntity getOwnerEntity(UserEntity user) {
         return OwnerEntity.builder()
+                .id(UUID.randomUUID())
                 .userId(user.getUserId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

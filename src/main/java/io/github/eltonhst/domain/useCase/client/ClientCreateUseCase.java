@@ -28,7 +28,7 @@ public class ClientCreateUseCase {
     @Transactional
     public Either<RuntimeException, UUID> execute(UserEntity user) {
         try {
-            log.info("[Service: ClientCreateUseCase] Iniciando a criação do client {}", user.getUserId());
+            log.info("[Service] Iniciando a criação do client {}", user.getUserId());
             addRoleToUser.execute(
                     user.getUserId(),
                     AuthEnum.CLIENT.getRole()
@@ -36,13 +36,14 @@ public class ClientCreateUseCase {
             final ClientEntity client = getClientEntity(user);
             return repository.createClient(client);
         } catch (RuntimeException e) {
-            log.error("[Service: ClientCreateUseCase] Erro ao tentar criar um novo client");
+            log.error("[Service] Erro ao tentar criar um novo client");
             return Either.left(new BadRequestException(e.getMessage()));
         }
     }
 
     private static ClientEntity getClientEntity(UserEntity user) {
         return ClientEntity.builder()
+                .id(UUID.randomUUID())
                 .userId(user.getUserId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

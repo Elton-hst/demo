@@ -28,11 +28,11 @@ public class UserCurrentUseCase {
     }
 
     public Either<RuntimeException, UserEntity> execute() {
-        log.info("[Service: UserCurrentUseCase] Iniciando a busca do usuário logado");
+        log.info("[Service] Iniciando a busca do usuário logado");
         final var result = currentUser();
 
         if (result.isLeft()) {
-            log.error("[Service: UserCurrentUseCase] Erro ao tentar encontrar o usuário atual");
+            log.error("[Service] Erro ao tentar encontrar o usuário atual");
             return Either.left(result.getLeft());
         }
 
@@ -41,24 +41,24 @@ public class UserCurrentUseCase {
         if (userEntity.getRoles().contains(AuthEnum.OWNER)) {
             final var owner = searchOwner.execute(userEntity.getUserId());
             if (owner.isLeft()) {
-                log.error("[Service: UserCurrentUseCase] Erro ao tentar encontrar o usuário atual");
+                log.error("[Service] Erro ao tentar encontrar o usuário atual");
                 return Either.left(owner.getLeft());
             }
 
             userEntity.setUserId(owner.get().getId());
-            log.info("[Service: UserCurrentUseCase] Sucesso na busca do usuário logado atual");
+            log.info("[Service] Sucesso na busca do usuário logado atual");
             return Either.right(userEntity);
         }
 
         final var client = searchClient.execute(userEntity.getUserId());
         if (client.isLeft()) {
-            log.error("[Service: UserCurrentUseCase] Erro ao tentar encontrar o usuário atual");
+            log.error("[Service] Erro ao tentar encontrar o usuário atual");
             return Either.left(client.getLeft());
         }
 
         userEntity.setUserId(client.get().getId());
 
-        log.info("[Service: UserCurrentUseCase] Sucesso na busca do usuário logado atual");
+        log.info("[Service] Sucesso na busca do usuário logado atual");
         return Either.right(userEntity);
     }
 

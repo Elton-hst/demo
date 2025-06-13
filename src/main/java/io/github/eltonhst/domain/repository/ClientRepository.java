@@ -13,7 +13,7 @@ public interface ClientRepository {
 
     Either<RuntimeException, UUID> createClient(ClientEntity clientEntity);
 
-    Either<RuntimeException, ClientEntity> findClientById(UUID userId);
+    Either<RuntimeException, ClientEntity> findByUserId(UUID userId);
 
     Page<ClientEntity> findAll(Pageable pageable);
 

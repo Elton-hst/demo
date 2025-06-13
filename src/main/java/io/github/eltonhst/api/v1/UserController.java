@@ -28,8 +28,8 @@ public class UserController {
         this.searchUser = searchUser;
     }
 
+    //@PreAuthorize("hasRole('admin')")
     @PostMapping
-    @PreAuthorize("hasRole('admin')")
     public ResponseEntity<UUID> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder) {
         final UUID userId = createUseCase.execute(userDTO).getOrElseThrow(error -> error);
         final var url = userDTO.isOwner() ? "api/owner/{id}" : "api/client/{id}";

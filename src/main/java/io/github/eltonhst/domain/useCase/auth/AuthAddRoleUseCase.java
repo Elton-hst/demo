@@ -24,25 +24,25 @@ public class AuthAddRoleUseCase {
     }
 
     public void execute(UUID userId, String roleName) {
-        log.info("[Service: AuthAddRoleUseCase] Adicionando role {} ao usuário {}", roleName, userId);
+        log.info("[Service] Adicionando role {} ao usuário {}", roleName, userId);
         try  {
             final var realmResource = keycloak.realm(keyclockProperties.getRealm());
 
             final var userResource = realmResource.users().get(userId.toString());
             if(userResource.toRepresentation() == null) {
-                log.error("[Service: AuthAddRoleUseCase] Usuário não encontrado");
+                log.error("[Service] Usuário não encontrado");
                 throw new NotFoundException("Usuário não encontrado");
             }
 
             final var role = realmResource.roles().get(roleName).toRepresentation();
             if(role == null) {
-                log.error("[Service: AuthAddRoleUseCase] A role {} não existe", roleName);
+                log.error("[Service] A role {} não existe", roleName);
                 throw new BadRequestException("Role não existe no sistema");
             }
 
             userResource.roles().realmLevel().add(List.of(role));
         } catch (RuntimeException e) {
-            log.error("[Service: AuthAddRoleUseCase] Falha ao tentar role ao usuário {}", userId);
+            log.error("[Service] Falha ao tentar role ao usuário {}", userId);
             throw new InternalServerException(e.getMessage());
         }
     }

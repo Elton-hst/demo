@@ -8,9 +8,16 @@ import java.util.UUID;
 
 public class MapperUser {
 
-    public static UserEntity toEntity(UserRepresentation userRepresentation) {
+    public static UserEntity toEntity(UserRepresentation data) {
         return UserEntity.builder()
-                .isOwner(true)
+                .userId(UUID.fromString(data.getId()))
+                .username(data.getUsername())
+                .email(data.getEmail())
+                .firstName(data.getFirstName())
+                .lastName(data.getLastName())
+                .enabled(data.isEnabled())
+                .emailVerified(data.isEmailVerified())
+                .createdTimestamp(data.getCreatedTimestamp())
                 .build();
     }
 
@@ -21,7 +28,6 @@ public class MapperUser {
                 .lastName(userDTO.lastName())
                 .password(userDTO.password())
                 .email(userDTO.email())
-                .isOwner(userDTO.isOwner())
                 .build();
     }
 
@@ -31,7 +37,7 @@ public class MapperUser {
                 .lastName(result.getLastName())
                 .password(result.getPassword())
                 .email(result.getEmail())
-                .isOwner(result.isOwner())
+                .isOwner(false)
                 .build();
     }
 }

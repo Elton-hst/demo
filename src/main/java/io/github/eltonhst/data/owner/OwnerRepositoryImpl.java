@@ -33,13 +33,13 @@ public class OwnerRepositoryImpl implements OwnerRepository {
     }
 
     @Override
-    public Either<RuntimeException, OwnerEntity> findOwnerById(UUID userId) {
+    public Either<RuntimeException, OwnerEntity> findByUserId(UUID userId) {
         final var result = dao.findByUserId(userId);
         if(result.isEmpty()) {
-            log.error("[Repository: OwnerRepositoryImpl] Usuário não encontrado {}", userId);
-            Either.left(new NotFoundException("Usuário não encontrado"));
+            log.error("[Repository] Usuário não encontrado {}", userId);
+            return Either.left(new NotFoundException("Usuário não encontrado"));
         }
-        log.info("[Repository: OwnerRepositoryImpl] Busca do usuário finalizada");
+        log.info("[Repository] Busca do usuário finalizada");
         return Either.right(result.get());
     }
 }

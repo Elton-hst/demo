@@ -28,30 +28,34 @@ public class ClientRepositoryImpl implements ClientRepository {
         try {
             Validator.validate(new ValidationClientImpl(), clientEntity);
         } catch(RuntimeException e) {
+            log.error("[Repository] Falha ao tentar adicionar um client {}", e.getMessage());
             return Either.left(e);
         }
-        final var result = dao.save(clientEntity).getId();
+        final var result = dao.save(clientEntity).getUserId();
+        log.info("[Repository] Sucesso ao adicionar um novo client");
         return Either.right(result);
     }
 
     @Override
-    public Either<RuntimeException, ClientEntity> findClientById(UUID userId) {
+    public Either<RuntimeException, ClientEntity> findByUserId(UUID userId) {
         final var result = dao.findByUserId(userId);
         if(result.isEmpty()) {
-            log.error("[Repository: ClientRepositoryImpl] Usuário não encontrado {}", userId);
-            Either.left(new NotFoundException("Usuário não encontrado"));
+            log.error("[Repository] Usuário não encontrado {}", userId);
+            return Either.left(new NotFoundException("Usuário não encontrado"));
         }
-        log.info("[Repository: ClientRepositoryImpl] Busca do usuário finalizada");
+        log.info("[Repository] Busca do usuário finalizada");
         return Either.right(result.get());
     }
 
     @Override
     public Page<ClientEntity> findAll(Pageable pageable) {
+        log.info("[Repository] listando todos os clients");
         return dao.findAll(pageable);
     }
 
     @Override
     public Long countClient() {
+        log.info("[Repository] consulta número de clients");
         return dao.count();
     }
 }

@@ -8,7 +8,6 @@ import io.github.eltonhst.infra.properties.KeyclockProperties;
 import io.vavr.control.Either;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.resource.UsersResource;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
@@ -31,60 +30,79 @@ public class UserSearchUseCase {
     }
 
     public Either<RuntimeException, UserEntity> findByUsername(String username) {
-        log.info("[Service: UserSearchUseCase] Iniciando a busca por username {}", username);
+        log.info("[Service] Iniciando a busca por username {}", username);
         final var user = keycloak
                 .realm(keyclockProperties.getRealm())
                 .users()
-                .search(username)
+                .searchByUsername(username, true)
                 .stream()
                 .findFirst();
 
         if(user.isEmpty()) {
-            log.error("[Service: UserSearchUseCase] Iniciando a busca por username {}", username);
+            log.error("[Service] Usuário não encontrado");
             return Either.left(new NotFoundException("Usuário não encontrado"));
         }
-        log.info("[Service: UserSearchUseCase] Iniciando a busca por username {}", username);
+        log.info("[Service] Sucesso ao buscar o usuário");
         return Either.right(toEntity(user.get()));
+    }
 
-        //return user.<Either<RuntimeException, UserEntity>>map(
-        //        userRepresentation -> Either.right(toEntity(userRepresentation))
-        //).orElseGet(() -> Either.left(new NotFoundException("Usuário não encontrado")));
+    public Either<RuntimeException, UserEntity> findByEmail(String email) {
+        log.info("[Service] Iniciando a busca por username {}", email);
+        final var user = keycloak
+                .realm(keyclockProperties.getRealm())
+                .users()
+                .searchByEmail(email, true)
+                .stream()
+                .findFirst();
+
+        if(user.isEmpty()) {
+            log.error("[Service] Usuário não encontrado");
+            return Either.left(new NotFoundException("Usuário não encontrado"));
+        }
+        log.info("[Service] Sucesso ao buscar o usuário");
+        return Either.right(toEntity(user.get()));
     }
 
     public Either<RuntimeException, UserEntity> findById(Principal principal) {
-        log.info("[Service: UserSearchUseCase] Iniciando a busca por id {}", principal.getName());
+        log.info("[Service] Iniciando a busca por id {}", principal.getName());
         try {
-            final UsersResource usersResource = keycloak.realm(properties.getRealm()).users();
-            final var result = usersResource.get(principal.getName());
+            final var userRepresentation = keycloak
+                    .realm(properties.getRealm())
+                    .users()
+                    .get(principal.getName())
+                    .toRepresentation();
 
-            if(result == null) {
-                log.error("[Service: UserSearchUseCase] Usuário não encontrado {}", principal.getName());
+            if(userRepresentation == null) {
+                log.error("[Service] Usuário não encontrado");
                 return Either.left(new NotFoundException("Usuário não encontrado"));
             }
 
-            log.info("[Service: UserSearchUseCase] Sucesso ao buscar o usuário");
-            return Either.right(MapperUser.toEntity(result.toRepresentation()));
+            log.info("[Service] Sucesso ao buscar o usuário");
+            return Either.right(MapperUser.toEntity(userRepresentation));
         } catch (RuntimeException e) {
-            log.error("[Service: UserSearchUseCase] Falha ao tentar buscar o usuário {}", e.getMessage());
+            log.error("[Service] Falha ao tentar buscar o usuário {}", e.getMessage());
             return Either.left(new BadRequestException("Falha ao tentar buscar o usuário"));
         }
     }
 
     public Either<RuntimeException, UserEntity> findById(UUID userId) {
-        log.info("[Service: UserSearchUseCase] Iniciando a busca por id {}", userId);
+        log.info("[Service] Iniciando a busca por id {}", userId);
         try {
-            final UsersResource usersResource = keycloak.realm(properties.getRealm()).users();
-            final var result = usersResource.get(userId.toString());
+            final var userRepresentation = keycloak
+                    .realm(properties.getRealm())
+                    .users()
+                    .get(userId.toString())
+                    .toRepresentation();
 
-            if(result == null) {
-                log.error("[Service: UserSearchUseCase] Usuário não encontrado {}", userId);
+            if(userRepresentation == null) {
+                log.error("[Service] Usuário não encontrado");
                 return Either.left(new NotFoundException("Usuário não encontrado"));
             }
 
-            log.info("[Service: UserSearchUseCase] Sucesso ao buscar o usuário");
-            return Either.right(MapperUser.toEntity(result.toRepresentation()));
+            log.info("[Service] Sucesso ao buscar o usuário");
+            return Either.right(MapperUser.toEntity(userRepresentation));
         } catch (RuntimeException e) {
-            log.error("[Service: UserSearchUseCase] Falha ao tentar buscar o usuário {}", e.getMessage());
+            log.error("[Service] Falha ao tentar buscar o usuário {}", e.getMessage());
             return Either.left(new BadRequestException("Falha ao tentar buscar o usuário"));
         }
     }

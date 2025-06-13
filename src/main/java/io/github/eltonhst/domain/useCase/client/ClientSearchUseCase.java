@@ -21,14 +21,10 @@ public class ClientSearchUseCase {
 
     public Either<RuntimeException, ClientEntity> execute(UUID userId) {
         log.info("[Service: ClientSearchUseCase] Iniciando a busca do client {}", userId);
-        return repository.findClientById(userId);
+        return repository.findByUserId(userId);
     }
 
     public void logActiveClients() {
-        log.info("Inicio da rotina");
-
         log.info("Quantidade de clients: {}", repository.countClient());
-
-        log.info("Fim da rotina");
     }
 }

@@ -1,4 +1,4 @@
-package io.github.eltonhst.infra.security;
+package io.github.eltonhst.infra.config;
 
 import io.github.eltonhst.infra.properties.KeyclockProperties;
 import org.keycloak.OAuth2Constants;
