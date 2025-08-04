@@ -28,7 +28,6 @@ public class UserController {
         this.searchUser = searchUser;
     }
 
-    //@PreAuthorize("hasRole('admin')")
     @PostMapping
     public ResponseEntity<UUID> createUser(@RequestBody UserDTO userDTO, UriComponentsBuilder uriBuilder) {
         final UUID userId = createUseCase.execute(userDTO).getOrElseThrow(error -> error);
